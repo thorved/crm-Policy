@@ -22,7 +22,7 @@
 					<li><a href="clientlist.php"><i class="fa fa-users"></i> &nbsp;Client List</a></li>
 					<li><a href="deletedclients.php"><i class="fa fa-trash" aria-hidden="true"></i> &nbsp;Deleted Clients</a></li>
 					<li><a href="importclients.php"><i class="fa fa-upload" aria-hidden="true"></i> &nbsp;Import Clients</a></li>
-					<li><a href="deleteimportclients.php"><i class="fa fa-upload" aria-hidden="true"></i> &nbsp;Delete Import Clients</a></li>
+					<li><a href="deleteimportclients.php"><i class="fa fa-upload" aria-hidden="true"></i> &nbsp;Delete Import Clients<sup style="color:red">*</sup></a></li>
 					
 				</ul>
 			</li>
@@ -50,6 +50,7 @@
 			</li>
 			
 					<li><a href="AssignedWork.php"><i class="fa fa-user"></i>Assigne Work </a></li>
+					<li><a href="ReAssignedWork.php"><i class="fa fa-repeat"></i>Re-Assigne Work </a></li>
 					<li><a href="ViewAssignedWork.php"><i class="fa fa-sitemap" aria-hidden="true"></i>View Assigned Work</a></li>
 					
 					<li><a href="Summary.php"><i class="fa fa-sitemap" aria-hidden="true"></i>Summary</a></li>

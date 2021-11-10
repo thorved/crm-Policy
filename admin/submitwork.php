@@ -16,7 +16,9 @@ if (isset($_POST)) {
     
 	foreach($cids_arr as $cid)
 	{
-		$sql = "UPDATE clients SET Caller_Code=(:Caller_Code),assigned_date=(:assigned_date) WHERE id=(:idedit)";
+		// $sql = "UPDATE clients SET Caller_Code=(:Caller_Code),assigned_date=(:assigned_date) WHERE id=(:idedit)";
+		$sql = 'UPDATE clients SET Caller_Code=(:Caller_Code),assigned_date=(:assigned_date),wcaction=NULL,nextdate=NULL,wcomment=NULL WHERE id=(:idedit);
+				UPDATE reassign_clients SET assigned_to=(:Caller_Code),reassign_count = reassign_count + 1 WHERE cid=(:idedit);';
         $query = $dbh->prepare($sql);
         $query->bindParam(':Caller_Code', $Caller_code, PDO::PARAM_STR);
         $query->bindParam(':idedit', $cid, PDO::PARAM_INT);

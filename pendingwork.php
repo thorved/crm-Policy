@@ -141,15 +141,15 @@ if (strlen($_SESSION['wlogin']) == 0) {
 													
 													</optgroup>
 													<optgroup label="Others">
-													<option <?php if ($_SESSION['wcaction'] == "Ringing") echo "selected='selected'";?> value="Ringing">Ringing</option>
-													<option <?php if ($_SESSION['wcaction'] == "Not reachable") echo "selected='selected'";?> value="Not reachable">Not reachable</option>
-													<option <?php if ($_SESSION['wcaction'] == "Number Busy") echo "selected='selected'";?> value="Number Busy">Number Busy</option>
+													<!-- <option <?php if ($_SESSION['wcaction'] == "Ringing") echo "selected='selected'";?> value="Ringing">Ringing</option> -->
+													<!-- <option <?php if ($_SESSION['wcaction'] == "Not reachable") echo "selected='selected'";?> value="Not reachable">Not reachable</option> -->
+													<!-- <option <?php if ($_SESSION['wcaction'] == "Number Busy") echo "selected='selected'";?> value="Number Busy">Number Busy</option> -->
 													<!--<option <?php if ($_SESSION['wcaction'] == "Wrong number") echo "selected='selected'";?> value="Wrong number">Wrong number</option>-->
 													<option <?php if ($_SESSION['wcaction'] == "Discussion done, to be called again") echo "selected='selected'";?> value="Discussion done, to be called again">Discussion done, to be called again</option>
 													<option <?php if ($_SESSION['wcaction'] == "Discussion not done, to be called again") echo "selected='selected'";?> value="Discussion not done, to be called again">Discussion not done, to be called again</option>
 													<!--<option <?php if ($_SESSION['wcaction'] == "Not interested") echo "selected='selected'";?> value="Not interested">Not interested</option>-->
 													<option <?php if ($_SESSION['wcaction'] == "Lead Generated") echo "selected='selected'";?> value="Lead Generated">Lead Generated</option>
-													<option <?php if ($_SESSION['wcaction'] == "Looking for some other product") echo "selected='selected'";?> value="Looking for some other product">Looking for some other product</option>
+													<!-- <option <?php if ($_SESSION['wcaction'] == "Looking for some other product") echo "selected='selected'";?> value="Looking for some other product">Looking for some other product</option> -->
 													<!--<option <?php if ($_SESSION['wcaction'] == "Lead Closed") echo "selected='selected'";?> value="Lead Closed">Lead Closed</option>-->
 													</optgroup>
 
@@ -206,7 +206,7 @@ if (strlen($_SESSION['wlogin']) == 0) {
 											<?php
 											if($_SESSION['wcaction']=="all")
 											{
-												$sql="select clients.id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,nextdate,Contact_No1,Contact_No2,Mobile_in_Form from users,clients where clients.Caller_Code=users.caller_code AND users.email=(:email) AND clients.nextdate>=(:pendingworkstartdate) AND clients.nextdate<=(:pendingworkenddate) and clients.wcaction!='Wrong number' and clients.wcaction!='Lead Closed' and clients.wcaction!='Not interested'";
+												$sql="select clients.id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,nextdate,Contact_No1,Contact_No2,Mobile_in_Form from users,clients where clients.Caller_Code=users.caller_code AND users.email=(:email) AND clients.nextdate>=(:pendingworkstartdate) AND clients.nextdate<=(:pendingworkenddate) and clients.wcaction!='Wrong number' and clients.wcaction!='Lead Closed' and clients.wcaction!='Not interested' and clients.wcaction!='Ringing' and clients.wcaction!='Not reachable' and clients.wcaction!='Number Busy' and clients.wcaction!='Looking for some other product'";
 												$query = $dbh->prepare($sql);
 											}
 											else

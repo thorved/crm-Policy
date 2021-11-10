@@ -13,7 +13,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         $sql2 = "delete from importlog Where sid='$_GET[sid]' AND lid='$_GET[lid]'";
         $query2 = $dbh->prepare($sql2);
 
-        if ($query->execute()&&$query2->execute()) {
+        if ($query->execute() && $query2->execute()) {
             $msg = "Clients deleted successfully";
         } else {
             $error = "Something went wrong. Please try again";
@@ -38,8 +38,8 @@ if (strlen($_SESSION['alogin']) == 0) {
         $_SESSION['deleteimportclientsenddate_admin'] = date("Y-m-d");
     }
 
-    
-    
+
+
 
 
 ?>
@@ -55,7 +55,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         <meta name="author" content="">
         <meta name="theme-color" content="#3e454c">
 
-        <title>deleteimportclients</title>
+        <title>Delete Import Clients</title>
 
         <!-- Font awesome -->
         <link rel="stylesheet" href="css/font-awesome.min.css">
