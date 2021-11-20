@@ -204,6 +204,7 @@ if (strlen($_SESSION['wlogin']) == 0) {
 
 
 											<?php
+											$_SESSION['redirect_worker_page'] = 'location:pendingwork.php';
 											if($_SESSION['wcaction']=="all")
 											{
 												$sql="select clients.id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,nextdate,Contact_No1,Contact_No2,Mobile_in_Form from users,clients where clients.Caller_Code=users.caller_code AND users.email=(:email) AND clients.nextdate>=(:pendingworkstartdate) AND clients.nextdate<=(:pendingworkenddate) and clients.wcaction!='Wrong number' and clients.wcaction!='Lead Closed' and clients.wcaction!='Not interested' and clients.wcaction!='Ringing' and clients.wcaction!='Not reachable' and clients.wcaction!='Number Busy' and clients.wcaction!='Looking for some other product'";

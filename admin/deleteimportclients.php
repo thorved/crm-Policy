@@ -7,13 +7,17 @@ if (strlen($_SESSION['alogin']) == 0) {
 } else {
     if (isset($_GET['sid']) && isset($_GET['lid'])) {
         //header('location:deleteimportclients.php');
-        $sql = "delete from clients Where id>='$_GET[sid]' AND id<='$_GET[lid]'";
+        $sql = 'delete from clients Where id>=(:sid) AND id<=(:lid);
+                delete from importlog Where sid=(:sid) AND lid=(:lid);
+                delete from reassign_clients Where cid>=(:sid) AND cid<=(:lid);
+                ';
         $query = $dbh->prepare($sql);
+        $query->bindParam(':sid', $_GET['sid'], PDO::PARAM_STR);
+        $query->bindParam(':lid', $_GET['lid'], PDO::PARAM_STR);
 
-        $sql2 = "delete from importlog Where sid='$_GET[sid]' AND lid='$_GET[lid]'";
-        $query2 = $dbh->prepare($sql2);
+       
 
-        if ($query->execute() && $query2->execute()) {
+        if ($query->execute()) {
             $msg = "Clients deleted successfully";
         } else {
             $error = "Something went wrong. Please try again";

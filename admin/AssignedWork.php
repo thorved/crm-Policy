@@ -8,44 +8,54 @@ if (strlen($_SESSION['alogin']) == 0) {
 
 
 
-if (isset($_POST['filter'])) 
-{
-	$caller_code=$_POST['caller_code'];
-	
-	if($_POST['work_load']=='UN-Assigned'){$work_load='where caller_code is null';}
-	else if($_POST['work_load']=='Assigned'){$work_load='where caller_code is not null';}
-	else {$work_load='where 1=1';}
+	if (isset($_POST['filter'])) {
+		$caller_code = $_POST['caller_code'];
 
-	
-$querysidlid = $connect->prepare("SELECT MAX(lid),MIN(sid) from importlog where idate='".$_POST['importdate']."'"); // prepate a query
-$querysidlid->execute(); // actually perform the query
-$resultsidlid = $querysidlid->get_result(); // retrieve the result so it can be used inside PHP
-$r = $resultsidlid->fetch_array(MYSQLI_ASSOC); // bind the data from the first result row to $r
-$lid = $r['MAX(lid)'];
-$sid = $r['MIN(sid)'];
-$importdate=' and id>='.$sid.' and id<='.$lid.'';
-$date=$_POST['importdate'];
+		if ($_POST['work_load'] == 'UN-Assigned') {
+			$work_load = 'where caller_code is null';
+		} else if ($_POST['work_load'] == 'Assigned') {
+			$work_load = 'where caller_code is not null';
+		} else {
+			$work_load = 'where 1=1';
+		}
 
-if($_POST['selectoption']=='all'){$checked='checked="checked"';}
-else{$checked='';}
 
-if($_POST['sourceby']=='all'){$sourceby='';}
-else{$sourceby=" and Sourced_By='".$_POST['sourceby']."'";}
+		$querysidlid = $connect->prepare("SELECT MAX(lid),MIN(sid) from importlog where idate='" . $_POST['importdate'] . "'"); // prepate a query
+		$querysidlid->execute(); // actually perform the query
+		$resultsidlid = $querysidlid->get_result(); // retrieve the result so it can be used inside PHP
+		$r = $resultsidlid->fetch_array(MYSQLI_ASSOC); // bind the data from the first result row to $r
+		$lid = $r['MAX(lid)'];
+		$sid = $r['MIN(sid)'];
+		$importdate = ' and id>=' . $sid . ' and id<=' . $lid . '';
+		$date = $_POST['importdate'];
 
-if($_POST['Company']=='all'){$Company='';}
-else{$Company=" and Company='".$_POST['Company']."'";}
+		if ($_POST['selectoption'] == 'all') {
+			$checked = 'checked="checked"';
+		} else {
+			$checked = '';
+		}
 
-$adate=$_POST['assigneddate'];
-}
-else
-{
-	//$caller_code='r1';
-	$date=date("Y-m-d");
-	$adate=date("Y-m-d");
-	$importdate='';
-	$Company='';
-	$sourceby='';
-}
+		if ($_POST['sourceby'] == 'all') {
+			$sourceby = '';
+		} else {
+			$sourceby = " and Sourced_By='" . $_POST['sourceby'] . "'";
+		}
+
+		if ($_POST['Company'] == 'all') {
+			$Company = '';
+		} else {
+			$Company = " and Company='" . $_POST['Company'] . "'";
+		}
+
+		$adate = $_POST['assigneddate'];
+	} else {
+		//$caller_code='r1';
+		$date = date("Y-m-d");
+		$adate = date("Y-m-d");
+		$importdate = '';
+		$Company = '';
+		$sourceby = '';
+	}
 
 
 
@@ -113,95 +123,96 @@ else
 					<div class="row">
 						<div class="col-md-12">
 							<?php
-											if (isset($caller_code)) {
-											$sql = "SELECT name from  users where caller_code=(:caller_code)";
-											$query = $dbh->prepare($sql);
-											$query->bindParam(':caller_code', $caller_code, PDO::PARAM_STR);
-											$query->execute();
-											$results = $query->fetchAll(PDO::FETCH_OBJ);
-											if ($query->rowCount() > 0) {
-												foreach ($results as $result) {				?>
-													
-														<?php echo '<h3 class="page-title"><i class="fa fa-user"></i> &nbsp;Worker: ' . $result->name . ' &nbsp; <button class="btn btn-primary" id="work" name="submit" type="submit"><h4>&nbsp;Give Work&nbsp;</h4></button></h3>'; ?>
-														<input type="hidden" id="callerCodeVal" value="<?php echo $caller_code?>"/>
-														
-													
+							if (isset($caller_code)) {
+								$sql = "SELECT name from  users where caller_code=(:caller_code)";
+								$query = $dbh->prepare($sql);
+								$query->bindParam(':caller_code', $caller_code, PDO::PARAM_STR);
+								$query->execute();
+								$results = $query->fetchAll(PDO::FETCH_OBJ);
+								if ($query->rowCount() > 0) {
+									foreach ($results as $result) {				?>
+
+										<?php echo '<h3 class="page-title"><i class="fa fa-user"></i> &nbsp;Worker: ' . $result->name . ' &nbsp; <button class="btn btn-primary" id="work" name="submit" type="submit"><h4>&nbsp;Give Work&nbsp;</h4></button></h3>'; ?>
+										<input type="hidden" id="callerCodeVal" value="<?php echo $caller_code ?>" />
 
 
-										<?php 
-												}
-											}
-										}
-										?>
-						</div>	
-						
+
+
+							<?php
+									}
+								}
+							}
+							?>
+						</div>
+
 						<div class="panel-body">
-						<form method="post" class="form-horizontal" enctype="multipart/form-data" name="filter">
-						<div class="row"><div class="form-group">
-						<label class="col-sm-1 control-label">Worker<span style="color:red">*</span></label>
-									<div class="col-sm-4">
-										<select id="caller_code" name="caller_code" class="form-control" required>
-
-											
-													<option value="all">Select Worker</option>
-
-											<?php $sql = "SELECT name,caller_code from  users";
-											$query = $dbh->prepare($sql);
-											$query->execute();
-											$results = $query->fetchAll(PDO::FETCH_OBJ);
-											$cnt = 1;
-											if ($query->rowCount() > 0) {
-												foreach ($results as $result) {				?>
-													<option <?php if ($caller_code == $result->caller_code) echo "selected='selected'";?> value="<?php echo htmlentities($result->caller_code); ?>"><?php echo htmlentities($cnt); ?>.<?php echo htmlentities($result->name); ?></option>
-											<?php $cnt = $cnt + 1;
-												}
-											} ?>
+							<form method="post" class="form-horizontal" enctype="multipart/form-data" name="filter">
+								<div class="row">
+									<div class="form-group">
+										<label class="col-sm-1 control-label">Worker<span style="color:red">*</span></label>
+										<div class="col-sm-4">
+											<select id="caller_code" name="caller_code" class="form-control" required>
 
 
-										</select>
+												<option value="all">Select Worker</option>
 
+												<?php $sql = "SELECT name,caller_code from  users";
+												$query = $dbh->prepare($sql);
+												$query->execute();
+												$results = $query->fetchAll(PDO::FETCH_OBJ);
+												$cnt = 1;
+												if ($query->rowCount() > 0) {
+													foreach ($results as $result) {				?>
+														<option <?php if ($caller_code == $result->caller_code) echo "selected='selected'"; ?> value="<?php echo htmlentities($result->caller_code); ?>"><?php echo htmlentities($cnt); ?>.<?php echo htmlentities($result->name); ?></option>
+												<?php $cnt = $cnt + 1;
+													}
+												} ?>
+
+
+											</select>
+
+										</div>
+
+										<label class="col-sm-1 control-label">Assigned Date</label>
+										<div class="col-sm-3">
+											<input type="date" name="assigneddate" class="form-control" value="<?php echo $adate; ?>">
+											<input type="hidden" id="asndate" value="<?php echo $adate ?>" />
+										</div>
+
+										<button class="btn btn-primary" name="filter" type="submit">Filter</button>
 									</div>
-									
-									<label class="col-sm-1 control-label">Assigned Date</label>
-							<div class="col-sm-3">
-							<input type="date" name="assigneddate" class="form-control" value="<?php echo $adate;?>">
-							<input type="hidden" id="asndate" value="<?php echo $adate?>"/>
-							</div>
-									
-									<button class="btn btn-primary" name="filter" type="submit">Filter</button>
-									</div>
-									</div>
-						<div class="form-group">		
-						<label class="col-sm-1 control-label">Work Load</label>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-1 control-label">Work Load</label>
 									<div class="col-sm-3">
 										<select name="work_load" class="form-control" required>
-												<option <?php if ($_POST['work_load'] == "all") echo "selected='selected'";?> value="all">All</option>
-												<option <?php if ($_POST['work_load'] == "Assigned") echo "selected='selected'";?> value="Assigned">Assigned Work</option>
-												<option <?php if ($_POST['work_load'] == "UN-Assigned") echo "selected='selected'";?> value="UN-Assigned">UN-Assigned Work</option>
-										</select>
-									</div>			
-						
-						<label class="col-sm-1 control-label">Import Date</label>
-							<div class="col-sm-3">
-							<input type="date" name="importdate" class="form-control" value="<?php echo $date;?>">
-							</div>
-							
-							<label class="col-sm-1 control-label">Select</label>
-									<div class="col-sm-3">
-										<select name="selectoption" class="form-control" required>
-												<option <?php if ($_POST['selectoption'] == "nall") echo "selected='selected'";?> value="nall">UN-Select All</option>
-												<option <?php if ($_POST['selectoption'] == "all") echo "selected='selected'";?> value="all">Select All</option>
-												
+											<option <?php if ($_POST['work_load'] == "all") echo "selected='selected'"; ?> value="all">All</option>
+											<option <?php if ($_POST['work_load'] == "Assigned") echo "selected='selected'"; ?> value="Assigned">Assigned Work</option>
+											<option <?php if ($_POST['work_load'] == "UN-Assigned") echo "selected='selected'"; ?> value="UN-Assigned">UN-Assigned Work</option>
 										</select>
 									</div>
-						</div>		
-						<div class="form-group">
+
+									<label class="col-sm-1 control-label">Import Date</label>
+									<div class="col-sm-3">
+										<input type="date" name="importdate" class="form-control" value="<?php echo $date; ?>">
+									</div>
+
+									<label class="col-sm-1 control-label">Select</label>
+									<div class="col-sm-3">
+										<select name="selectoption" class="form-control" required>
+											<option <?php if ($_POST['selectoption'] == "nall") echo "selected='selected'"; ?> value="nall">UN-Select All</option>
+											<option <?php if ($_POST['selectoption'] == "all") echo "selected='selected'"; ?> value="all">Select All</option>
+
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
 									<label class="col-sm-1 control-label">Sourced By</label>
 									<div class="col-sm-3">
 										<select name="sourceby" class="form-control" required>
 
-											
-													<option value="all">All</option>
+
+											<option value="all">All</option>
 
 											<?php $sql = "SELECT Sourced_By from  clients GROUP by Sourced_By;";
 											$query = $dbh->prepare($sql);
@@ -210,21 +221,21 @@ else
 											$cnt = 1;
 											if ($query->rowCount() > 0) {
 												foreach ($results as $result) {				?>
-													<option <?php if ($_POST['sourceby'] == $result->Sourced_By&&$_POST['sourceby'] !=null) echo "selected='selected'";?> value="<?php echo htmlentities($result->Sourced_By); ?>"><?php echo htmlentities($cnt); ?>.<?php echo htmlentities($result->Sourced_By); ?></option>
+													<option <?php if ($_POST['sourceby'] == $result->Sourced_By && $_POST['sourceby'] != null) echo "selected='selected'"; ?> value="<?php echo htmlentities($result->Sourced_By); ?>"><?php echo htmlentities($cnt); ?>.<?php echo htmlentities($result->Sourced_By); ?></option>
 											<?php $cnt = $cnt + 1;
 												}
 											} ?>
 
 
-										</select>									
+										</select>
 									</div>
-									
+
 									<label class="col-sm-1 control-label">Company</label>
 									<div class="col-sm-3">
 										<select name="Company" class="form-control" required>
 
-											
-													<option value="all">All</option>
+
+											<option value="all">All</option>
 
 											<?php $sql = "SELECT Company from  clients GROUP by Company;";
 											$query = $dbh->prepare($sql);
@@ -233,21 +244,21 @@ else
 											$cnt = 1;
 											if ($query->rowCount() > 0) {
 												foreach ($results as $result) {				?>
-													<option <?php if ($_POST['Company'] == $result->Company&&$_POST['Company'] !=Null ) echo "selected='selected'";?> value="<?php echo htmlentities($result->Company); ?>"><?php echo htmlentities($cnt); ?>.<?php echo htmlentities($result->Company); ?></option>
+													<option <?php if ($_POST['Company'] == $result->Company && $_POST['Company'] != Null) echo "selected='selected'"; ?> value="<?php echo htmlentities($result->Company); ?>"><?php echo htmlentities($cnt); ?>.<?php echo htmlentities($result->Company); ?></option>
 											<?php $cnt = $cnt + 1;
 												}
 											} ?>
 
 
-										</select>									
+										</select>
 									</div>
-						
-						
-						</div>
-						</form>
+
+
+								</div>
+							</form>
 						</div>
 
-						
+
 
 
 
@@ -269,13 +280,13 @@ else
 											<th>#</th>
 											<!--	//<th>Image</th>-->
 											<th>Insured Name</th>
-												<th>Reference Tagging</th>
-												<th>Plan</th>
-												<th>Pickup Date</th>
-                                                <th>Sourced By</th>
-                                                <th>Company</th>
+											<th>Reference Tagging</th>
+											<th>Plan</th>
+											<th>Pickup Date</th>
+											<th>Sourced By</th>
+											<th>Company</th>
 											<th>Worker</th>
-											
+
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -284,14 +295,15 @@ else
 
 
 
-										
+
 										<?php
-										
+
 										if (isset($caller_code)) {
-											
-											$sql = "SELECT id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,Caller from  clients ".$work_load.$importdate.$Company.$sourceby." ORDER BY id DESC";
+
+											$sql = "SELECT id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,Caller from  clients " . $work_load . $importdate . $Company . $sourceby . " ORDER BY id DESC";
+											// $sql = "SELECT id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,Caller from  clients  ORDER BY id DESC";
 											$query = $dbh->prepare($sql);
-											$query->bindParam(':caller_code', $caller_code, PDO::PARAM_STR);
+											//$query->bindParam(':caller_code', $caller_code, PDO::PARAM_STR);
 											$query->execute();
 											$results = $query->fetchAll(PDO::FETCH_OBJ);
 											$cnt = 1;
@@ -300,16 +312,17 @@ else
 													<tr>
 														<td><?php echo htmlentities($cnt); ?></td>
 														<!--<td><img src="../images/<?php echo htmlentities($result->image); ?>" style="width:50px; border-radius:50%;"/></td> -->
-														<td><a href="clientdetail-selected.php?cid=<?php echo $result->id;?>" target="_blank">
-														<?php echo htmlentities($result->Insured_Name); ?></a></td>
-														
-                                            <td><?php echo htmlentities($result->Reference_Tagging);?></td>
-                                            <td><?php echo htmlentities($result->Plan);?></td>
-											<td><?php $formatexpiry_date = new DateTime($result->Pickup_Date); echo htmlentities($formatexpiry_date->format('d-m-Y'));?></td>
-                                            <td><?php echo htmlentities($result->Sourced_By);?></td>
-                                            <td><?php echo htmlentities($result->Company);?> </td>
+														<td><a href="clientdetail-selected.php?cid=<?php echo $result->id; ?>" target="_blank">
+																<?php echo htmlentities($result->Insured_Name); ?></a></td>
+
+														<td><?php echo htmlentities($result->Reference_Tagging); ?></td>
+														<td><?php echo htmlentities($result->Plan); ?></td>
+														<td><?php $formatexpiry_date = new DateTime($result->Pickup_Date);
+															echo htmlentities($formatexpiry_date->format('d-m-Y')); ?></td>
+														<td><?php echo htmlentities($result->Sourced_By); ?></td>
+														<td><?php echo htmlentities($result->Company); ?> </td>
 														<td><?php echo htmlentities($result->Caller); ?></td>
-														<td><?php echo '<input ' .$checked. ' type="checkbox" id="' . $result->id . '" value="' . $caller_code . '">' ?></td>
+														<td><?php echo '<input ' . $checked . ' type="checkbox" id="' . $result->id . '" value="' . $caller_code . '">' ?></td>
 													</tr>
 
 
@@ -360,14 +373,14 @@ else
 				for (var i = 0; i < checkboxes.length; i++) {
 					if (checkboxes[i].checked) {
 						var id = checkboxes[i].id;
-						cids+=id + "+";
+						cids += id + "+";
 					}
 				}
-				cids = cids.substring(0, cids.length - 1); 
+				cids = cids.substring(0, cids.length - 1);
 				var data = {
 					cids: cids,
 					callerCode: callerCodeVal,
-					asnDate : asnDateVal
+					asnDate: asnDateVal
 				};
 
 				function sendData(data) {

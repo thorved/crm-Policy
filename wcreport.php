@@ -33,7 +33,7 @@ if (strlen($_SESSION['wlogin']) == 0) {
 			$query->bindParam(':wcomment', $wcomment, PDO::PARAM_STR);
 			if ($query->execute()) {
 				$msg = "Report Updated Successfully";
-				header('location:pendingwork.php');
+				header($_SESSION['redirect_worker_page']);
 			} else {
 				$error = "error";
 			}
@@ -54,7 +54,7 @@ if (strlen($_SESSION['wlogin']) == 0) {
 			$query->bindParam(':wcomment', $wcomment, PDO::PARAM_STR);
 			if ($query->execute()) {
 				$msg = "Report Updated Successfully";
-				header('location:pendingwork.php');
+				header($_SESSION['redirect_worker_page']);
 			} else {
 				$error = "error";
 			}
@@ -70,7 +70,7 @@ if (strlen($_SESSION['wlogin']) == 0) {
 		$query->bindParam(':wcomment', $wcomment, PDO::PARAM_STR);
 		if ($query->execute()) {
 			$msg = "Report Updated Successfully";
-			header('location:pendingwork.php');
+			header($_SESSION['redirect_worker_page']);
 		} else {
 			$error = "error";
 		}

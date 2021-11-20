@@ -96,6 +96,7 @@ if (strlen($_SESSION['wlogin']) == 0) {
                                                 <th>Sourced By</th>
                                                 <th>Company</th>
                                                 <th>Contact No</th>
+                                                <th>Work Expiry</th>
                                                 <th style="display:none;">Contact No</th>
                                                 <th>Action</th>
                                             </tr>
@@ -106,7 +107,8 @@ if (strlen($_SESSION['wlogin']) == 0) {
 
 
                                             <?php
-                                            $sql = "select clients.id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,Contact_No1,Contact_No2,Mobile_in_Form from users,clients,reassign_clients where clients.Caller_Code=users.caller_code AND users.email=(:email) AND reassign_clients.cid=clients.id AND reassign_clients.reassign_date>=(:date)  AND (clients.wcaction ='Ringing' or clients.wcaction ='Number Busy' or clients.wcaction ='Not reachable') ORDER BY assigned_date ASC";
+                                            $_SESSION['redirect_worker_page'] = 'location:freshpendingwork.php';
+                                            $sql = "select clients.id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,Contact_No1,Contact_No2,Mobile_in_Form,reassign_date from users,clients,reassign_clients where clients.Caller_Code=users.caller_code AND users.email=(:email) AND reassign_clients.cid=clients.id AND reassign_clients.reassign_date>=(:date)  AND (clients.wcaction ='Ringing' or clients.wcaction ='Number Busy' or clients.wcaction ='Not reachable') ORDER BY reassign_date";
                                             $query = $dbh->prepare($sql);
                                             $query->bindParam(':email', $_SESSION['wlogin'], PDO::PARAM_STR);
                                             $query->bindParam(':date', $date, PDO::PARAM_STR);
@@ -135,7 +137,9 @@ if (strlen($_SESSION['wlogin']) == 0) {
                                                             echo htmlentities($formatexpiry_date->format('d-m-Y')); ?></td>
                                                         <td><?php echo htmlentities($result->Sourced_By); ?></td>
                                                         <td><?php echo htmlentities($result->Company); ?> </td>
+                                                        
                                                         <td><?php echo htmlentities(hidephoneno($result->Contact_No1)); ?><br><?php echo htmlentities(hidephoneno($result->Contact_No2)); ?><br><?php echo htmlentities(hidephoneno($result->Mobile_in_Form)); ?> </td>
+                                                        <td><?php echo date("d-m-Y", strtotime($result->reassign_date)); ?> </td>
                                                         <td style="display:none;"><?php echo htmlentities($result->Contact_No1); ?><br><?php echo htmlentities($result->Contact_No2); ?><br><?php echo htmlentities($result->Mobile_in_Form); ?> </td>
                                                         <td>
                                                             <a href="msgcmt.php?cid=<?php echo $result->id; ?>&cname=<?php echo $result->Insured_Name; ?>"><i class="fa fa-mail-reply"></i></a>

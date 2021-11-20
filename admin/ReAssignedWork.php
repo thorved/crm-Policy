@@ -278,7 +278,7 @@ else
 										
 										if (isset($caller_code)) {
 											
-											$sql = "SELECT id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,Caller,reassign_count from  clients,reassign_clients  ".$work_load.$Company.$sourceby." AND clients.id=reassign_clients.cid AND reassign_clients.assigned_to is NULL And reassign_clients.reassign_date<'".Date('Y-m-d')."' ORDER BY reassign_clients.reassign_count";
+											$sql = "SELECT id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,Caller,reassign_count from  clients,reassign_clients  ".$work_load.$Company.$sourceby." AND clients.id=reassign_clients.cid AND reassign_clients.assigned_to is NULL And reassign_clients.reassign_date<='".Date('Y-m-d')."' ORDER BY reassign_clients.reassign_count";
 											$query = $dbh->prepare($sql);
 											$query->bindParam(':caller_code', $caller_code, PDO::PARAM_STR);
 											$query->execute();

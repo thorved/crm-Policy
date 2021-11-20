@@ -106,6 +106,7 @@ if (strlen($_SESSION['wlogin']) == 0) {
 
 
 											<?php
+											$_SESSION['redirect_worker_page'] = 'location:assignedwork.php';
 											$sql = "select clients.id,Insured_Name,Reference_Tagging,Plan,Pickup_Date,Sourced_By,Company,Contact_No1,Contact_No2,Mobile_in_Form from users,clients where clients.Caller_Code=users.caller_code AND users.email=(:email) AND clients.wcaction is null AND clients.assigned_date<=(:date) ORDER BY assigned_date ASC";
 											$query = $dbh->prepare($sql);
 											$query->bindParam(':email', $_SESSION['wlogin'], PDO::PARAM_STR);
